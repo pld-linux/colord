@@ -109,6 +109,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libexecdir}/colord
 %attr(755,root,root) %{_libdir}/libcolord.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcolord.so.1
+%{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Device.xml
+%{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Profile.xml
+%{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.xml
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_mandir}/man1/colormgr.1*
@@ -119,9 +122,6 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libcolord.so
-%{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Device.xml
-%{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Profile.xml
-%{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.xml
 %{_includedir}/libcolord
 %{_pkgconfigdir}/colord.pc
 
