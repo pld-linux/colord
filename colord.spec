@@ -26,6 +26,7 @@ BuildRequires:	polkit-devel >= 0.97
 BuildRequires:	sane-backends-devel
 BuildRequires:	sqlite3-devel
 BuildRequires:	udev-glib-devel
+Suggests:	shared-color-profiles
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -81,6 +82,7 @@ Dokumentacja API colord.
 %{__autoheader}
 %{__automake}
 %configure \
+	--disable-silent-rules \
 	%{__enable_disable apidocs gtk-doc} \
 	%{__enable_disable static_libs static} \
 	--with-html-dir=%{_gtkdocdir}
