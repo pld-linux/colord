@@ -16,11 +16,12 @@ BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
 BuildRequires:	dbus-devel
 BuildRequires:	gettext-devel
-BuildRequires:	glib2-devel >= 1:2.26.0
+BuildRequires:	glib2-devel >= 1:2.28.0
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	intltool >= 0.40.0
 BuildRequires:	lcms2-devel
 BuildRequires:	libtool
+BuildRequires:	libusb-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.97
 BuildRequires:	sane-backends-devel
@@ -39,7 +40,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki colord
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	dbus-devel
-Requires:	glib2-devel >= 1:2.26.0
+Requires:	glib2-devel >= 1:2.28.0
 
 %description devel
 Header files for colord library.
@@ -117,9 +118,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libcolord.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcolord.so.1
 %dir %{_libdir}/colord-sensors
-%dir %{_libdir}/colord-sensors/*.so
-%dir %{_datadir}/color
-%dir %{_datadir}/color/icc
+%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_dummy.so
+%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_huey.so
+%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_munki.so
 %dir %{_datadir}/color/icc/colord
 %{_datadir}/color/icc/colord/*.icc
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Device.xml
@@ -134,6 +135,7 @@ rm -rf $RPM_BUILD_ROOT
 /etc/dbus-1/system.d/org.freedesktop.ColorManager.conf
 /lib/udev/rules.d/69-cd-sensors.rules
 /lib/udev/rules.d/95-cd-devices.rules
+%dir /var/lib/colord
 
 %files devel
 %defattr(644,root,root,755)
