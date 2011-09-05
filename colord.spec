@@ -5,13 +5,13 @@
 #
 Summary:	Color daemon
 Name:		colord
-Version:	0.1.10
+Version:	0.1.12
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
-Source0:	http://people.freedesktop.org/~hughsient/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	6d4985b922163128beed42ecfdef5ede
-URL:		http://colord.hughsie.com/
+Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
+# Source0-md5:	6771aef77142c66bc92988c5174f24b5
+URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
 BuildRequires:	dbus-devel
@@ -27,6 +27,7 @@ BuildRequires:	polkit-devel >= 0.97
 BuildRequires:	sane-backends-devel
 BuildRequires:	sqlite3-devel
 BuildRequires:	udev-glib-devel
+BuildRequires:	vala
 Suggests:	shared-color-profiles
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -130,18 +131,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_mandir}/man1/cd-create-profile.1*
+%{_mandir}/man1/cd-fix-profile.1*
 %{_mandir}/man1/colormgr.1*
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/colord.conf
 /etc/dbus-1/system.d/org.freedesktop.ColorManager.conf
 /lib/udev/rules.d/69-cd-sensors.rules
 /lib/udev/rules.d/95-cd-devices.rules
 %dir /var/lib/colord
+%{_libdir}/girepository-1.0/Colord-1.0.typelib
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libcolord.so
 %{_includedir}/colord-1
 %{_pkgconfigdir}/colord.pc
+%{_datadir}/vala/vapi/colord.vapi
+%{_datadir}/gir-1.0/Colord-1.0.gir
 
 %if %{with static_libs}
 %files static
