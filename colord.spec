@@ -6,7 +6,7 @@
 Summary:	Color daemon
 Name:		colord
 Version:	0.1.12
-Release:	1
+Release:	2
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/colord-sensors/*.a
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/colord-sensors/*.la
+
+# the same as it locale
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/locale/it_IT
 
 %find_lang %{name}
 
