@@ -2,11 +2,13 @@
 # Conditional build:
 %bcond_without	apidocs		# do not build and package API docs
 %bcond_without	static_libs	# don't build static libraries
+%bcond_without	vala		# don't build Vala API
 #
-Summary:	Color daemon
+Summary:	Color daemon - system daemon for managing color devices
+Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
 Version:	0.1.12
-Release:	3
+Release:	4
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
@@ -27,7 +29,8 @@ BuildRequires:	polkit-devel >= 0.97
 BuildRequires:	sane-backends-devel
 BuildRequires:	sqlite3-devel
 BuildRequires:	udev-glib-devel
-BuildRequires:	vala
+%{?with_vala:BuildRequires:	vala}
+Requires:	%{name}-libs = %{version}-%{release}
 Suggests:	shared-color-profiles
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -35,11 +38,28 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 colord is a low level system activated daemon that maps color devices
 to color profiles in the system context.
 
+%description -l pl.UTF-8
+colord to niskopoziomowa usługa systemowa odwzorowująca urządzenia
+obsługujące kolory na profile kolorów w kontekście systemu.
+
+%package libs
+Summary:	colord library
+Summary(pl.UTF-8):	Biblioteka colord
+Group:		Libraries
+Suggests:	%{name} = %{version}-%{release}
+Conflicts:	colord < 0.1.12-4
+
+%description libs
+colord library.
+
+%description libs -l pl.UTF-8
+Biblioteka colord.
+
 %package devel
 Summary:	Header files for colord library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki colord
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	dbus-devel
 Requires:	glib2-devel >= 1:2.28.0
 
@@ -72,6 +92,18 @@ colord API documentation.
 
 %description apidocs -l pl.UTF-8
 Dokumentacja API colord.
+
+%package -n vala-colord
+Summary:	colord API for Vala language
+Summary(pl.UTF-8):	API colord dla języka Vala
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description -n vala-colord
+colord API for Vala language.
+
+%description -n vala-colord -l pl.UTF-8
+API colord dla języka Vala.
 
 %prep
 %setup -q
@@ -109,8 +141,8 @@ rm -rf $RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-p /sbin/ldconfig
-%postun	-p /sbin/ldconfig
+%post	libs -p /sbin/ldconfig
+%postun	libs -p /sbin/ldconfig
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
@@ -119,8 +151,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/cd-fix-profile
 %attr(755,root,root) %{_bindir}/colormgr
 %attr(755,root,root) %{_libexecdir}/colord
-%attr(755,root,root) %{_libdir}/libcolord.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libcolord.so.1
 %dir %{_libdir}/colord-sensors
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_dummy.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_huey.so
@@ -141,6 +171,11 @@ rm -rf $RPM_BUILD_ROOT
 /lib/udev/rules.d/69-cd-sensors.rules
 /lib/udev/rules.d/95-cd-devices.rules
 %dir /var/lib/colord
+
+%files libs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libcolord.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libcolord.so.1
 %{_libdir}/girepository-1.0/Colord-1.0.typelib
 
 %files devel
@@ -148,7 +183,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libcolord.so
 %{_includedir}/colord-1
 %{_pkgconfigdir}/colord.pc
-%{_datadir}/vala/vapi/colord.vapi
 %{_datadir}/gir-1.0/Colord-1.0.gir
 
 %if %{with static_libs}
@@ -161,4 +195,10 @@ rm -rf $RPM_BUILD_ROOT
 %files apidocs
 %defattr(644,root,root,755)
 %{_gtkdocdir}/colord
+%endif
+
+%if %{with vala}
+%files -n vala-colord
+%defattr(644,root,root,755)
+%{_datadir}/vala/vapi/colord.vapi
 %endif
