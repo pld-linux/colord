@@ -27,6 +27,7 @@ BuildRequires:	libtool
 BuildRequires:	libusb-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.97
+BuildRequires:	resmgr-devel
 BuildRequires:	sane-backends-devel
 BuildRequires:	sqlite3-devel
 BuildRequires:	udev-glib-devel
