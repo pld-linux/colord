@@ -27,7 +27,7 @@ BuildRequires:	libtool
 BuildRequires:	libusb-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.97
-BuildRequires:	sane-backends-devel
+BuildRequires:	sane-backends-devel >= 1.0.20-3
 BuildRequires:	sqlite3-devel
 BuildRequires:	udev-glib-devel
 %{?with_vala:BuildRequires:	vala}
