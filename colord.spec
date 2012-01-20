@@ -1,3 +1,4 @@
+# TODO: systemd units (--with-systemdsystemunitdir=...)
 #
 # Conditional build:
 %bcond_without	apidocs		# do not build and package API docs
@@ -7,12 +8,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	0.1.15
+Version:	0.1.16
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	f212cbc7eece3fa403c1507fc8b10dbb
+# Source0-md5:	cb73ffdcebe4c06852c48355e83a4bc4
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
@@ -27,12 +28,13 @@ BuildRequires:	libgusb-devel >= 0.1.1
 BuildRequires:	libtool
 BuildRequires:	libusb-devel >= 1.0.0
 BuildRequires:	pkgconfig
-BuildRequires:	polkit-devel >= 0.97
+BuildRequires:	polkit-devel >= 0.103
 BuildRequires:	sane-backends-devel >= 1.0.20-3
 BuildRequires:	sqlite3-devel
 BuildRequires:	udev-glib-devel
 %{?with_vala:BuildRequires:	vala}
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	polkit-libs >= 0.103
 Suggests:	shared-color-profiles
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -48,6 +50,7 @@ obsługujące kolory na profile kolorów w kontekście systemu.
 Summary:	colord library
 Summary(pl.UTF-8):	Biblioteka colord
 Group:		Libraries
+Requires:	glib2 >= 1:2.28.0
 Suggests:	%{name} = %{version}-%{release}
 Conflicts:	colord < 0.1.12-4
 
@@ -157,7 +160,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_colorhug.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_dummy.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_huey.so
-%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_munki.so
+# disabled for now
+#%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_munki.so
 %dir %{_datadir}/color/icc/colord
 %{_datadir}/color/icc/colord/*.icc
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Device.xml
