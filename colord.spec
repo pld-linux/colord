@@ -1,4 +1,3 @@
-# TODO: systemd units (--with-systemdsystemunitdir=...)
 #
 # Conditional build:
 %bcond_without	apidocs		# do not build and package API docs
@@ -9,7 +8,7 @@ Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
 Version:	0.1.16
-Release:	1
+Release:	2
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
@@ -29,12 +28,14 @@ BuildRequires:	libtool
 BuildRequires:	libusb-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.103
+BuildRequires:	rpmbuild(macros) >= 1.644
 BuildRequires:	sane-backends-devel >= 1.0.20-3
 BuildRequires:	sqlite3-devel
 BuildRequires:	udev-glib-devel
 %{?with_vala:BuildRequires:	vala}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	polkit-libs >= 0.103
+Requires:	systemd-units >= 38
 Suggests:	shared-color-profiles
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -124,7 +125,8 @@ API colord dla języka Vala.
 	--disable-silent-rules \
 	%{__enable_disable apidocs gtk-doc} \
 	%{__enable_disable static_libs static} \
-	--with-html-dir=%{_gtkdocdir}
+	--with-html-dir=%{_gtkdocdir} \
+	--with-systemdsystemunitdir=%{systemdunitdir}
 # doc build is broken with -j
 %{__make} -j1
 
@@ -145,6 +147,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post
+%systemd_post colord.service
+
+%preun
+%systemd_preun colord.service
+
+%postun
+%systemd_reload
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
@@ -173,6 +184,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/cd-create-profile.1*
 %{_mandir}/man1/cd-fix-profile.1*
 %{_mandir}/man1/colormgr.1*
+%{systemdunitdir}/colord.service
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/colord.conf
 /etc/dbus-1/system.d/org.freedesktop.ColorManager.conf
 /lib/udev/rules.d/69-cd-sensors.rules
