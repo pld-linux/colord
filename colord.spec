@@ -7,12 +7,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	0.1.16
-Release:	2
+Version:	0.1.18
+Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	cb73ffdcebe4c06852c48355e83a4bc4
+# Source0-md5:	8c9bf54733e9862544860f1a8a9a61f9
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
@@ -117,7 +117,7 @@ API colord dla języka Vala.
 %build
 %{__intltoolize}
 %{__libtoolize}
-%{__aclocal}
+%{__aclocal} -I m4
 %{__autoconf}
 %{__autoheader}
 %{__automake}
@@ -167,6 +167,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/cd-fix-profile
 %attr(755,root,root) %{_bindir}/colormgr
 %attr(755,root,root) %{_libexecdir}/colord
+%attr(755,root,root) %{_libexecdir}/colord-sane
 %dir %{_libdir}/colord-sensors
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_colorhug.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_dummy.so
@@ -179,14 +180,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Profile.xml
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Sensor.xml
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.xml
+%{_datadir}/dbus-1/interfaces/org.freedesktop.colord.sane.xml
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
+%{_datadir}/dbus-1/system-services/org.freedesktop.colord-sane.service
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_mandir}/man1/cd-create-profile.1*
 %{_mandir}/man1/cd-fix-profile.1*
 %{_mandir}/man1/colormgr.1*
 %{systemdunitdir}/colord.service
+%{systemdunitdir}/colord-sane.service
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/colord.conf
 /etc/dbus-1/system.d/org.freedesktop.ColorManager.conf
+/etc/dbus-1/system.d/org.freedesktop.colord-sane.conf
 /lib/udev/rules.d/69-cd-sensors.rules
 /lib/udev/rules.d/95-cd-devices.rules
 %dir /var/lib/colord
