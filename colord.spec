@@ -7,12 +7,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	0.1.19
+Version:	0.1.20
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	38f04d3882826d403f03a971bb54148a
+# Source0-md5:	a42a36158b2b52748ac8ad913cdc4cb3
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
@@ -20,6 +20,7 @@ BuildRequires:	dbus-devel
 BuildRequires:	gettext-devel >= 0.17
 BuildRequires:	glib2-devel >= 1:2.28.0
 BuildRequires:	gobject-introspection-devel >= 0.9.8
+BuildRequires:	gtk+3-devel
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	intltool >= 0.40.0
 BuildRequires:	lcms2-devel >= 2.2
@@ -112,6 +113,31 @@ colord API for Vala language.
 %description -n vala-colord -l pl.UTF-8
 API colord dla języka Vala.
 
+%package gtk
+Summary:	GTK helper library for colord
+Summary(pl.UTF-8):	Biblioteka pomocniczna GTK dla colord
+Group:		Libraries
+Suggests:	%{name} = %{version}-%{release}
+
+%description gtk
+GTK helper library for colord.
+
+%description gtk -l pl.UTF-8
+Biblioteka pomocnicza GTK dla colord.
+
+%package gtk-devel
+Summary:	Header files for colord-gtk library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki colord-gtk
+Group:		Development/Libraries
+Requires:	%{name}-gtk = %{version}-%{release}
+Requires:	gtk+3-devel
+
+%description gtk-devel
+Header files for colord-gtk library.
+
+%description gtk-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki colord-gtk.
+
 %prep
 %setup -q
 
@@ -142,7 +168,7 @@ rm -rf $RPM_BUILD_ROOT
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/colord-sensors/*.la
 
 # the same as it locale
-%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/locale/it_IT
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
 
 %find_lang %{name}
 
@@ -214,6 +240,7 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libcolord.a
+%{_libdir}/libcolord-gtk.a
 %endif
 
 %if %{with apidocs}
@@ -227,3 +254,15 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_datadir}/vala/vapi/colord.vapi
 %endif
+
+%files gtk
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libcolord-gtk.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libcolord-gtk.so.1
+%{_libdir}/girepository-1.0/ColordGtk-1.0.typelib
+
+%files gtk-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libcolord-gtk.so
+%{_pkgconfigdir}/colord-gtk.pc
+%{_datadir}/gir-1.0/ColordGtk-1.0.gir
