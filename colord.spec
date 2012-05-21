@@ -3,6 +3,7 @@
 %bcond_without	apidocs		# do not build and package API docs
 %bcond_without	static_libs	# don't build static libraries
 %bcond_without	vala		# don't build Vala API
+%bcond_without	gtk		# GTK+ support (disable for bootstrap)
 #
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
@@ -20,7 +21,7 @@ BuildRequires:	dbus-devel
 BuildRequires:	gettext-devel >= 0.17
 BuildRequires:	glib2-devel >= 1:2.28.0
 BuildRequires:	gobject-introspection-devel >= 0.9.8
-BuildRequires:	gtk+3-devel
+%{?with_gtk:BuildRequires:	gtk+3-devel >= 3.0}
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	intltool >= 0.40.0
 BuildRequires:	lcms2-devel >= 2.2
@@ -89,6 +90,45 @@ Static colord library.
 %description static -l pl.UTF-8
 Statyczna biblioteka colord.
 
+%package gtk
+Summary:	GTK helper library for colord
+Summary(pl.UTF-8):	Biblioteka pomocniczna GTK dla colord
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	gtk+3 >= 3.0
+
+%description gtk
+GTK helper library for colord.
+
+%description gtk -l pl.UTF-8
+Biblioteka pomocnicza GTK dla colord.
+
+%package gtk-devel
+Summary:	Header files for colord-gtk library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki colord-gtk
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-gtk = %{version}-%{release}
+Requires:	gtk+3-devel >= 3.0
+
+%description gtk-devel
+Header files for colord-gtk library.
+
+%description gtk-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki colord-gtk.
+
+%package gtk-static
+Summary:	Static colord-gtk library
+Summary(pl.UTF-8):	Statyczna biblioteka colord-gtk
+Group:		Development/Libraries
+Requires:	%{name}-gtk-devel = %{version}-%{release}
+
+%description gtk-static
+Static colord-gtk library.
+
+%description gtk-static -l pl.UTF-8
+Statyczna biblioteka colord-gtk.
+
 %package apidocs
 Summary:	colord API documentation
 Summary(pl.UTF-8):	Dokumentacja API colord
@@ -113,30 +153,17 @@ colord API for Vala language.
 %description -n vala-colord -l pl.UTF-8
 API colord dla języka Vala.
 
-%package gtk
-Summary:	GTK helper library for colord
-Summary(pl.UTF-8):	Biblioteka pomocniczna GTK dla colord
-Group:		Libraries
-Suggests:	%{name} = %{version}-%{release}
+%package -n bash-completion-colord
+Summary:	bash-completion for colormgr console commands
+Summary(pl.UTF-8):	Bashowe uzupełnianie poleceń terminalowych colormgr
+Group:		Applications/Shells
+Requires:	bash-completion
 
-%description gtk
-GTK helper library for colord.
+%description -n bash-completion-colord
+bash-completion for colormgr console commands.
 
-%description gtk -l pl.UTF-8
-Biblioteka pomocnicza GTK dla colord.
-
-%package gtk-devel
-Summary:	Header files for colord-gtk library
-Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki colord-gtk
-Group:		Development/Libraries
-Requires:	%{name}-gtk = %{version}-%{release}
-Requires:	gtk+3-devel
-
-%description gtk-devel
-Header files for colord-gtk library.
-
-%description gtk-devel -l pl.UTF-8
-Pliki nagłówkowe biblioteki colord-gtk.
+%description -n bash-completion-colord -l pl.UTF-8
+Bashowe uzupełnianie poleceń terminalowych colormgr.
 
 %prep
 %setup -q
@@ -149,6 +176,7 @@ Pliki nagłówkowe biblioteki colord-gtk.
 %{__autoheader}
 %{__automake}
 %configure \
+	%{!?with_gtk:--disable-gtk} \
 	--disable-silent-rules \
 	%{__enable_disable apidocs gtk-doc} \
 	%{__enable_disable static_libs static} \
@@ -186,6 +214,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
+
+%post	gtk -p /sbin/ldconfig
+%postun	gtk -p /sbin/ldconfig
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
@@ -240,7 +271,26 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libcolord.a
+%endif
+
+%if %{with gtk}
+%files gtk
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libcolord-gtk.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libcolord-gtk.so.1
+%{_libdir}/girepository-1.0/ColordGtk-1.0.typelib
+
+%files gtk-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libcolord-gtk.so
+%{_datadir}/gir-1.0/ColordGtk-1.0.gir
+%{_pkgconfigdir}/colord-gtk.pc
+
+%if %{with static_libs}
+%files gtk-static
+%defattr(644,root,root,755)
 %{_libdir}/libcolord-gtk.a
+%endif
 %endif
 
 %if %{with apidocs}
@@ -255,14 +305,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/vala/vapi/colord.vapi
 %endif
 
-%files gtk
+%files -n bash-completion-colord
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libcolord-gtk.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libcolord-gtk.so.1
-%{_libdir}/girepository-1.0/ColordGtk-1.0.typelib
-
-%files gtk-devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libcolord-gtk.so
-%{_pkgconfigdir}/colord-gtk.pc
-%{_datadir}/gir-1.0/ColordGtk-1.0.gir
+%{_sysconfdir}/bash_completion.d/colormgr-completion.bash
