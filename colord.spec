@@ -3,17 +3,16 @@
 %bcond_without	apidocs		# do not build and package API docs
 %bcond_without	static_libs	# don't build static libraries
 %bcond_without	vala		# don't build Vala API
-%bcond_without	gtk		# GTK+ support (disable for bootstrap)
 #
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	0.1.21
+Version:	0.1.22
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	8028ac0d078efb2584602e7931dd06b2
+# Source0-md5:	695403d0d480ffa7a0f424f18d696373
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
@@ -21,12 +20,11 @@ BuildRequires:	dbus-devel
 BuildRequires:	gettext-devel >= 0.17
 BuildRequires:	glib2-devel >= 1:2.28.0
 BuildRequires:	gobject-introspection-devel >= 0.9.8
-%{?with_gtk:BuildRequires:	gtk+3-devel >= 3.0}
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	intltool >= 0.40.0
 BuildRequires:	lcms2-devel >= 2.2
 BuildRequires:	libgusb-devel >= 0.1.1
-BuildRequires:	libtool
+BuildRequires:	libtool >= 2:2.0
 BuildRequires:	libusb-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.103
@@ -90,45 +88,6 @@ Static colord library.
 %description static -l pl.UTF-8
 Statyczna biblioteka colord.
 
-%package gtk
-Summary:	GTK helper library for colord
-Summary(pl.UTF-8):	Biblioteka pomocniczna GTK dla colord
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	gtk+3 >= 3.0
-
-%description gtk
-GTK helper library for colord.
-
-%description gtk -l pl.UTF-8
-Biblioteka pomocnicza GTK dla colord.
-
-%package gtk-devel
-Summary:	Header files for colord-gtk library
-Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki colord-gtk
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-Requires:	%{name}-gtk = %{version}-%{release}
-Requires:	gtk+3-devel >= 3.0
-
-%description gtk-devel
-Header files for colord-gtk library.
-
-%description gtk-devel -l pl.UTF-8
-Pliki nagłówkowe biblioteki colord-gtk.
-
-%package gtk-static
-Summary:	Static colord-gtk library
-Summary(pl.UTF-8):	Statyczna biblioteka colord-gtk
-Group:		Development/Libraries
-Requires:	%{name}-gtk-devel = %{version}-%{release}
-
-%description gtk-static
-Static colord-gtk library.
-
-%description gtk-static -l pl.UTF-8
-Statyczna biblioteka colord-gtk.
-
 %package apidocs
 Summary:	colord API documentation
 Summary(pl.UTF-8):	Dokumentacja API colord
@@ -176,7 +135,6 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 %{__autoheader}
 %{__automake}
 %configure \
-	%{!?with_gtk:--disable-gtk} \
 	--disable-silent-rules \
 	%{__enable_disable apidocs gtk-doc} \
 	%{__enable_disable static_libs static} \
@@ -197,6 +155,8 @@ rm -rf $RPM_BUILD_ROOT
 
 # the same as it locale
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
+# empty version of bg locale
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/bg_BG
 
 %find_lang %{name}
 
@@ -214,9 +174,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
-
-%post	gtk -p /sbin/ldconfig
-%postun	gtk -p /sbin/ldconfig
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
@@ -271,26 +228,6 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libcolord.a
-%endif
-
-%if %{with gtk}
-%files gtk
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libcolord-gtk.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libcolord-gtk.so.1
-%{_libdir}/girepository-1.0/ColordGtk-1.0.typelib
-
-%files gtk-devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libcolord-gtk.so
-%{_datadir}/gir-1.0/ColordGtk-1.0.gir
-%{_pkgconfigdir}/colord-gtk.pc
-
-%if %{with static_libs}
-%files gtk-static
-%defattr(644,root,root,755)
-%{_libdir}/libcolord-gtk.a
-%endif
 %endif
 
 %if %{with apidocs}
