@@ -7,12 +7,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	0.1.23
+Version:	0.1.24
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	e1e3bfd048afa63e3187e9b9dc68f0c7
+# Source0-md5:	1e7c4164c35b8415af108fb2a0db7e1f
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
@@ -29,15 +29,15 @@ BuildRequires:	libusb-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.103
 BuildRequires:	rpmbuild(macros) >= 1.644
-BuildRequires:	sane-backends-devel >= 1.0.20-3
 BuildRequires:	sqlite3-devel
+BuildRequires:	systemd-devel >= 44
 BuildRequires:	udev-devel
 BuildRequires:	udev-glib-devel
 %{?with_vala:BuildRequires:	vala}
-Requires(post,preun,postun):	systemd-units >= 38
+Requires(post,preun,postun):	systemd-units >= 44
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	polkit-libs >= 0.103
-Requires:	systemd-units >= 38
+Requires:	systemd-units >= 44
 Suggests:	shared-color-profiles
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -139,6 +139,7 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 	--disable-silent-rules \
 	%{__enable_disable apidocs gtk-doc} \
 	%{__enable_disable static_libs static} \
+	%{__enable_disable vala} \
 	--with-html-dir=%{_gtkdocdir} \
 	--with-systemdsystemunitdir=%{systemdunitdir}
 # doc build is broken with -j
@@ -150,9 +151,10 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/colord-sensors/*.a
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/colord-sensors/*.la
+# loadable modules
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/colord-{plugins,sensors}/*.{la,a}
 
 # the same as it locale
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
@@ -183,7 +185,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/cd-fix-profile
 %attr(755,root,root) %{_bindir}/colormgr
 %attr(755,root,root) %{_libexecdir}/colord
-%attr(755,root,root) %{_libexecdir}/colord-sane
+%dir %{_libdir}/colord-plugins
+%attr(755,root,root) %{_libdir}/colord-plugins/libcd_plugin_camera.so
+%attr(755,root,root) %{_libdir}/colord-plugins/libcd_plugin_scanner.so
 %dir %{_libdir}/colord-sensors
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_colorhug.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_dummy.so
@@ -196,18 +200,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Profile.xml
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Sensor.xml
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.xml
-%{_datadir}/dbus-1/interfaces/org.freedesktop.colord.sane.xml
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
-%{_datadir}/dbus-1/system-services/org.freedesktop.colord-sane.service
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_mandir}/man1/cd-create-profile.1*
 %{_mandir}/man1/cd-fix-profile.1*
 %{_mandir}/man1/colormgr.1*
 %{systemdunitdir}/colord.service
-%{systemdunitdir}/colord-sane.service
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/colord.conf
 /etc/dbus-1/system.d/org.freedesktop.ColorManager.conf
-/etc/dbus-1/system.d/org.freedesktop.colord-sane.conf
 /lib/udev/rules.d/69-cd-sensors.rules
 /lib/udev/rules.d/95-cd-devices.rules
 %dir /var/lib/colord
