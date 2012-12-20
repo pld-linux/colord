@@ -7,16 +7,17 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	0.1.25
+Version:	0.1.26
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	85549f99d36c0436db8b9c764215c584
+# Source0-md5:	003dc934ddcdfe09b478b84ac0288dcf
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
 BuildRequires:	dbus-devel
+BuildRequires:	docbook-utils
 BuildRequires:	gettext-devel >= 0.17
 BuildRequires:	glib2-devel >= 1:2.28.0
 BuildRequires:	gobject-introspection-devel >= 0.9.8
@@ -185,19 +186,24 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/cd-fix-profile
 %attr(755,root,root) %{_bindir}/colormgr
 %attr(755,root,root) %{_libexecdir}/colord
+%attr(755,root,root) %{_libexecdir}/colord-session
 %dir %{_libdir}/colord-plugins
 %attr(755,root,root) %{_libdir}/colord-plugins/libcd_plugin_camera.so
 %attr(755,root,root) %{_libdir}/colord-plugins/libcd_plugin_scanner.so
 %dir %{_libdir}/colord-sensors
+%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_argyll.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_colorhug.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_dummy.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_huey.so
 # disabled for now
 #%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_munki.so
+%{_datadir}/colord
+%{_datadir}/dbus-1/interfaces/org.freedesktop.ColorHelper.xml
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Device.xml
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Profile.xml
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.Sensor.xml
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.xml
+%{_datadir}/dbus-1/services/org.freedesktop.ColorHelper.service
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_mandir}/man1/cd-create-profile.1*
