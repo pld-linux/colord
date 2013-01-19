@@ -7,12 +7,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	0.1.27
+Version:	0.1.28
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	832bc43d8e832cad860f2eb69fc1978a
+# Source0-md5:	14a37f7aae8b47d247adea77686d6bd1
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
@@ -168,12 +168,16 @@ rm -rf $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %post
+%glib_compile_schemas
 %systemd_post colord.service
 
 %preun
 %systemd_preun colord.service
 
 %postun
+if [ "$1" = "0" ]; then
+	%glib_compile_schemas
+fi
 %systemd_reload
 
 %post	libs -p /sbin/ldconfig
@@ -206,6 +210,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.xml
 %{_datadir}/dbus-1/services/org.freedesktop.ColorHelper.service
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
+%{_datadir}/glib-2.0/schemas/org.freedesktop.ColorHelper.gschema.xml
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_mandir}/man1/cd-create-profile.1*
 %{_mandir}/man1/cd-fix-profile.1*
