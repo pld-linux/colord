@@ -1,18 +1,19 @@
 #
 # Conditional build:
 %bcond_without	apidocs		# do not build and package API docs
+%bcond_without	sane		# SANE support
 %bcond_without	static_libs	# don't build static libraries
 %bcond_without	vala		# don't build Vala API
 #
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	0.1.28
+Version:	0.1.29
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	14a37f7aae8b47d247adea77686d6bd1
+# Source0-md5:	5cadede0c67946113b4d176d7661abc3
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
@@ -30,6 +31,7 @@ BuildRequires:	libusb-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.103
 BuildRequires:	rpmbuild(macros) >= 1.644
+%{?with_sane:BuildRequires:	sane-backends-devel}
 BuildRequires:	sqlite3-devel
 BuildRequires:	systemd-devel >= 44
 BuildRequires:	udev-devel
@@ -56,6 +58,7 @@ Summary(pl.UTF-8):	Biblioteka colord
 Group:		Libraries
 Requires:	glib2 >= 1:2.28.0
 Suggests:	%{name} = %{version}-%{release}
+Obsoletes:	colorhug-client-libs < 0.1.14
 Conflicts:	colord < 0.1.12-4
 
 %description libs
@@ -71,6 +74,7 @@ Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	dbus-devel
 Requires:	glib2-devel >= 1:2.28.0
+Obsoletes:	colorhug-client-devel < 0.1.14
 
 %description devel
 Header files for colord library.
@@ -83,6 +87,7 @@ Summary:	Static colord library
 Summary(pl.UTF-8):	Statyczna biblioteka colord
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
+Obsoletes:	colorhug-client-static < 0.1.14
 
 %description static
 Static colord library.
@@ -139,6 +144,7 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 %configure \
 	--disable-silent-rules \
 	%{__enable_disable apidocs gtk-doc} \
+	%{__enable sane} \
 	%{__enable_disable static_libs static} \
 	%{__enable_disable vala} \
 	--with-html-dir=%{_gtkdocdir} \
@@ -190,13 +196,16 @@ fi
 %attr(755,root,root) %{_bindir}/cd-fix-profile
 %attr(755,root,root) %{_bindir}/colormgr
 %attr(755,root,root) %{_libexecdir}/colord
+%{?with_sane:%attr(755,root,root) %{_libexecdir}/colord-sane}
 %attr(755,root,root) %{_libexecdir}/colord-session
 %dir %{_libdir}/colord-plugins
 %attr(755,root,root) %{_libdir}/colord-plugins/libcd_plugin_camera.so
+%{?with_sane:%attr(755,root,root) %{_libdir}/colord-plugins/libcd_plugin_sane.so}
 %attr(755,root,root) %{_libdir}/colord-plugins/libcd_plugin_scanner.so
 %dir %{_libdir}/colord-sensors
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_argyll.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_colorhug.so
+%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_dtp94.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_dummy.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_huey.so
 # disabled for now
@@ -226,19 +235,42 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libcolord.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcolord.so.1
+%attr(755,root,root) %{_libdir}/libcolordprivate.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libcolordprivate.so.1
+%attr(755,root,root) %{_libdir}/libcolorhug.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libcolorhug.so.1
+%attr(755,root,root) %{_libdir}/libdtp94.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libdtp94.so.0
+%attr(755,root,root) %{_libdir}/libhuey.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libhuey.so.0
+%attr(755,root,root) %{_libdir}/libmunki.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libmunki.so.0
 %{_libdir}/girepository-1.0/Colord-1.0.typelib
+%{_libdir}/girepository-1.0/ColorHug-1.0.typelib
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libcolord.so
+%attr(755,root,root) %{_libdir}/libcolordprivate.so
+%attr(755,root,root) %{_libdir}/libcolorhug.so
+%attr(755,root,root) %{_libdir}/libdtp94.so
+%attr(755,root,root) %{_libdir}/libhuey.so
+%attr(755,root,root) %{_libdir}/libmunki.so
 %{_includedir}/colord-1
 %{_pkgconfigdir}/colord.pc
+%{_pkgconfigdir}/colorhug.pc
 %{_datadir}/gir-1.0/Colord-1.0.gir
+%{_datadir}/gir-1.0/ColorHug-1.0.gir
 
 %if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libcolord.a
+%{_libdir}/libcolordprivate.a
+%{_libdir}/libcolorhug.a
+%{_libdir}/libdtp94.a
+%{_libdir}/libhuey.a
+%{_libdir}/libmunki.a
 %endif
 
 %if %{with apidocs}
