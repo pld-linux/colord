@@ -8,12 +8,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	0.1.29
+Version:	0.1.30
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	5cadede0c67946113b4d176d7661abc3
+# Source0-md5:	88ec2c419a9903f5bec91d603c0e7097
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
@@ -239,12 +239,12 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libcolordprivate.so.1
 %attr(755,root,root) %{_libdir}/libcolorhug.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcolorhug.so.1
-%attr(755,root,root) %{_libdir}/libdtp94.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdtp94.so.0
-%attr(755,root,root) %{_libdir}/libhuey.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libhuey.so.0
-%attr(755,root,root) %{_libdir}/libmunki.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmunki.so.0
+%attr(755,root,root) %{_libdir}/libdtp94-private.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libdtp94-private.so.0
+%attr(755,root,root) %{_libdir}/libhuey-private.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libhuey-private.so.0
+%attr(755,root,root) %{_libdir}/libmunki-private.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libmunki-private.so.0
 %{_libdir}/girepository-1.0/Colord-1.0.typelib
 %{_libdir}/girepository-1.0/ColorHug-1.0.typelib
 
@@ -253,9 +253,9 @@ fi
 %attr(755,root,root) %{_libdir}/libcolord.so
 %attr(755,root,root) %{_libdir}/libcolordprivate.so
 %attr(755,root,root) %{_libdir}/libcolorhug.so
-%attr(755,root,root) %{_libdir}/libdtp94.so
-%attr(755,root,root) %{_libdir}/libhuey.so
-%attr(755,root,root) %{_libdir}/libmunki.so
+%attr(755,root,root) %{_libdir}/libdtp94-private.so
+%attr(755,root,root) %{_libdir}/libhuey-private.so
+%attr(755,root,root) %{_libdir}/libmunki-private.so
 %{_includedir}/colord-1
 %{_pkgconfigdir}/colord.pc
 %{_pkgconfigdir}/colorhug.pc
@@ -268,9 +268,9 @@ fi
 %{_libdir}/libcolord.a
 %{_libdir}/libcolordprivate.a
 %{_libdir}/libcolorhug.a
-%{_libdir}/libdtp94.a
-%{_libdir}/libhuey.a
-%{_libdir}/libmunki.a
+%{_libdir}/libdtp94-private.a
+%{_libdir}/libhuey-private.a
+%{_libdir}/libmunki-private.a
 %endif
 
 %if %{with apidocs}
