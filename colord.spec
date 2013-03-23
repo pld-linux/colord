@@ -8,19 +8,19 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	0.1.30
-Release:	2
+Version:	0.1.31
+Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	88ec2c419a9903f5bec91d603c0e7097
+# Source0-md5:	3b880ff2c785b83320286b3ae350531b
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
 BuildRequires:	dbus-devel
 BuildRequires:	docbook-utils
 BuildRequires:	gettext-devel >= 0.17
-BuildRequires:	glib2-devel >= 1:2.28.0
+BuildRequires:	glib2-devel >= 1:2.32.0
 BuildRequires:	gobject-introspection-devel >= 0.9.8
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	intltool >= 0.40.0
@@ -56,7 +56,10 @@ obsługujące kolory na profile kolorów w kontekście systemu.
 Summary:	colord library
 Summary(pl.UTF-8):	Biblioteka colord
 Group:		Libraries
-Requires:	glib2 >= 1:2.28.0
+Requires:	glib2 >= 1:2.32.0
+Requires:	lcms2 >= 2.2
+# for libcolorhug only
+Requires:	libgusb >= 0.1.1
 Suggests:	%{name} = %{version}-%{release}
 Obsoletes:	colorhug-client-libs < 0.1.14
 Conflicts:	colord < 0.1.12-4
@@ -73,7 +76,9 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki colord
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	dbus-devel
-Requires:	glib2-devel >= 1:2.28.0
+Requires:	glib2-devel >= 1:2.32.0
+Requires:	lcms2-devel >= 2.2
+Requires:	libgusb-devel >= 0.1.1
 Obsoletes:	colorhug-client-devel < 0.1.14
 
 %description devel
@@ -206,6 +211,9 @@ fi
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_huey.so
 # disabled for now
 #%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_munki.so
+%attr(755,root,root) %{_libdir}/colord-sensors/libdtp94-private.so
+%attr(755,root,root) %{_libdir}/colord-sensors/libhuey-private.so
+%attr(755,root,root) %{_libdir}/colord-sensors/libmunki-private.so
 %{_datadir}/colord
 %{_datadir}/color/icc/colord
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorHelper.xml
@@ -235,12 +243,6 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libcolordprivate.so.1
 %attr(755,root,root) %{_libdir}/libcolorhug.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcolorhug.so.1
-%attr(755,root,root) %{_libdir}/libdtp94-private.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdtp94-private.so.0
-%attr(755,root,root) %{_libdir}/libhuey-private.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libhuey-private.so.0
-%attr(755,root,root) %{_libdir}/libmunki-private.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libmunki-private.so.0
 %{_libdir}/girepository-1.0/Colord-1.0.typelib
 %{_libdir}/girepository-1.0/ColorHug-1.0.typelib
 
@@ -249,9 +251,6 @@ fi
 %attr(755,root,root) %{_libdir}/libcolord.so
 %attr(755,root,root) %{_libdir}/libcolordprivate.so
 %attr(755,root,root) %{_libdir}/libcolorhug.so
-%attr(755,root,root) %{_libdir}/libdtp94-private.so
-%attr(755,root,root) %{_libdir}/libhuey-private.so
-%attr(755,root,root) %{_libdir}/libmunki-private.so
 %{_includedir}/colord-1
 %{_pkgconfigdir}/colord.pc
 %{_pkgconfigdir}/colorhug.pc
@@ -264,9 +263,6 @@ fi
 %{_libdir}/libcolord.a
 %{_libdir}/libcolordprivate.a
 %{_libdir}/libcolorhug.a
-%{_libdir}/libdtp94-private.a
-%{_libdir}/libhuey-private.a
-%{_libdir}/libmunki-private.a
 %endif
 
 %if %{with apidocs}
