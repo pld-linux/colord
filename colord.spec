@@ -8,12 +8,13 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	0.1.33
+Version:	1.0.0
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	384f1be4e23ac0dbf1977224aac306c1
+# Source0-md5:	5b0c442a2a87c3688b17e1547452ffcb
+Patch0:		%{name}-completions.patch
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
@@ -128,7 +129,7 @@ API colord dla języka Vala.
 Summary:	bash-completion for colormgr console commands
 Summary(pl.UTF-8):	Bashowe uzupełnianie poleceń terminalowych colormgr
 Group:		Applications/Shells
-Requires:	bash-completion
+Requires:	bash-completion >= 2.0
 
 %description -n bash-completion-colord
 bash-completion for colormgr console commands.
@@ -138,6 +139,7 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{__intltoolize}
@@ -148,6 +150,7 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 %{__automake}
 %configure \
 	--disable-silent-rules \
+	--enable-bash-completion=%{_datadir}/bash-completion/completions \
 	%{__enable_disable apidocs gtk-doc} \
 	%{__enable sane} \
 	%{__enable_disable static_libs static} \
@@ -228,6 +231,8 @@ fi
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_mandir}/man1/cd-create-profile.1*
 %{_mandir}/man1/cd-fix-profile.1*
+# man5?
+%{_mandir}/man1/colord.conf.1*
 %{_mandir}/man1/colormgr.1*
 %{systemdunitdir}/colord.service
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/colord.conf
@@ -280,4 +285,4 @@ fi
 
 %files -n bash-completion-colord
 %defattr(644,root,root,755)
-%{_sysconfdir}/bash_completion.d/colormgr-completion.bash
+%{_datadir}/bash-completion/completions/colormgr
