@@ -8,12 +8,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	1.0.0
+Version:	1.0.2
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	5b0c442a2a87c3688b17e1547452ffcb
+# Source0-md5:	98cd74c2be108cbd81c4a9cd6b324910
 Patch0:		%{name}-completions.patch
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
@@ -21,7 +21,7 @@ BuildRequires:	automake >= 1:1.9
 BuildRequires:	dbus-devel
 BuildRequires:	docbook-utils
 BuildRequires:	gettext-devel >= 0.17
-BuildRequires:	glib2-devel >= 1:2.32.0
+BuildRequires:	glib2-devel >= 1:2.36
 BuildRequires:	gobject-introspection-devel >= 0.9.8
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	intltool >= 0.40.0
@@ -57,7 +57,7 @@ obsługujące kolory na profile kolorów w kontekście systemu.
 Summary:	colord library
 Summary(pl.UTF-8):	Biblioteka colord
 Group:		Libraries
-Requires:	glib2 >= 1:2.32.0
+Requires:	glib2 >= 1:2.36
 Requires:	lcms2 >= 2.2
 # for libcolorhug only
 Requires:	libgusb >= 0.1.1
@@ -77,7 +77,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki colord
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	dbus-devel
-Requires:	glib2-devel >= 1:2.32.0
+Requires:	glib2-devel >= 1:2.36
 Requires:	lcms2-devel >= 2.2
 Requires:	libgusb-devel >= 0.1.1
 Obsoletes:	colorhug-client-devel < 0.1.14
