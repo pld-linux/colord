@@ -8,12 +8,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	1.0.3
+Version:	1.0.4
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	a5e0da68c656812113fe0fcdda33e82c
+# Source0-md5:	1a7d2a8649358fa72d5c3b0e4c21a04f
 Patch0:		%{name}-completions.patch
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
