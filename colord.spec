@@ -8,12 +8,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	1.0.6
+Version:	1.2.0
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	9bd8a1f117742c31d195a09092ca3066
+# Source0-md5:	740b321a32c6e54d28e6d043007947ea
 Patch0:		%{name}-completions.patch
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
@@ -25,7 +25,7 @@ BuildRequires:	glib2-devel >= 1:2.36
 BuildRequires:	gobject-introspection-devel >= 0.9.8
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	intltool >= 0.40.0
-BuildRequires:	lcms2-devel >= 2.2
+BuildRequires:	lcms2-devel >= 2.4
 BuildRequires:	libgusb-devel >= 0.1.1
 BuildRequires:	libtool >= 2:2.0
 BuildRequires:	libusb-devel >= 1.0.0
@@ -58,7 +58,7 @@ Summary:	colord library
 Summary(pl.UTF-8):	Biblioteka colord
 Group:		Libraries
 Requires:	glib2 >= 1:2.36
-Requires:	lcms2 >= 2.2
+Requires:	lcms2 >= 2.4
 # for libcolorhug only
 Requires:	libgusb >= 0.1.1
 Suggests:	%{name} = %{version}-%{release}
@@ -78,7 +78,7 @@ Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	dbus-devel
 Requires:	glib2-devel >= 1:2.36
-Requires:	lcms2-devel >= 2.2
+Requires:	lcms2-devel >= 2.4
 Requires:	libgusb-devel >= 0.1.1
 Obsoletes:	colorhug-client-devel < 0.1.14
 
@@ -178,6 +178,10 @@ rm -rf $RPM_BUILD_ROOT
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
 # empty version of bg locale
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/bg_BG
+# empty version of nb locale
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/nb_NO
+test ! -d $RPM_BUILD_ROOT%{_localedir}/nn || exit 1
+%{__mv} $RPM_BUILD_ROOT%{_localedir}/{nn_NO,nn}
 
 %find_lang %{name}
 
@@ -198,7 +202,7 @@ fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README TODO
+%doc AUTHORS ChangeLog NEWS README.md TODO
 %attr(755,root,root) %{_bindir}/cd-create-profile
 %attr(755,root,root) %{_bindir}/cd-fix-profile
 %attr(755,root,root) %{_bindir}/cd-iccdump
@@ -235,10 +239,8 @@ fi
 %{_mandir}/man1/cd-create-profile.1*
 %{_mandir}/man1/cd-fix-profile.1*
 # man5?
-%{_mandir}/man1/colord.conf.1*
 %{_mandir}/man1/colormgr.1*
 %{systemdunitdir}/colord.service
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/colord.conf
 /etc/dbus-1/system.d/org.freedesktop.ColorManager.conf
 /lib/udev/rules.d/69-cd-sensors.rules
 /lib/udev/rules.d/95-cd-devices.rules
@@ -247,11 +249,11 @@ fi
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libcolord.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libcolord.so.1
+%attr(755,root,root) %ghost %{_libdir}/libcolord.so.2
 %attr(755,root,root) %{_libdir}/libcolordprivate.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libcolordprivate.so.1
+%attr(755,root,root) %ghost %{_libdir}/libcolordprivate.so.2
 %attr(755,root,root) %{_libdir}/libcolorhug.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libcolorhug.so.1
+%attr(755,root,root) %ghost %{_libdir}/libcolorhug.so.2
 %{_libdir}/girepository-1.0/Colord-1.0.typelib
 %{_libdir}/girepository-1.0/ColorHug-1.0.typelib
 
