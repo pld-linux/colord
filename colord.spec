@@ -15,6 +15,7 @@ Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
 # Source0-md5:	740b321a32c6e54d28e6d043007947ea
 Patch0:		%{name}-completions.patch
+Patch1:		%{name}-sh.patch
 URL:		http://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
@@ -143,6 +144,7 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__intltoolize}
@@ -174,14 +176,21 @@ rm -rf $RPM_BUILD_ROOT
 # loadable modules
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/colord-{plugins,sensors}/*.{la,a}
 
-# the same as it locale
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
 # empty version of bg locale
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/bg_BG
+# less incomplete version of da locale
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/da
+%{__mv} $RPM_BUILD_ROOT%{_localedir}/{da_DK,da}
+# the same as it locale
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
 # empty version of nb locale
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/nb_NO
+# simplify dir name
 test ! -d $RPM_BUILD_ROOT%{_localedir}/nn || exit 1
 %{__mv} $RPM_BUILD_ROOT%{_localedir}/{nn_NO,nn}
+# less incomplete version of pt locale
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/pt
+%{__mv} $RPM_BUILD_ROOT%{_localedir}/{pt_PT,pt}
 
 %find_lang %{name}
 

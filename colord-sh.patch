@@ -1,0 +1,11 @@
+--- colord-1.2.0/configure.ac.orig	2014-04-13 08:14:11.677141206 +0200
++++ colord-1.2.0/configure.ac	2014-04-13 08:15:38.100472738 +0200
+@@ -171,7 +171,7 @@
+ if test x$enable_udev != xno; then
+ 	PKG_CHECK_MODULES(UDEV, libudev)
+ 	PKG_CHECK_MODULES(GUDEV, gudev-1.0)
+-	COLORD_REQUIRES_PRIVATE+=", libudev"
++	COLORD_REQUIRES_PRIVATE="${COLORD_REQUIRES_PRIVATE}, libudev"
+ 	AC_DEFINE(HAVE_UDEV,1,[Use UDEV support])
+ fi
+ AM_CONDITIONAL(HAVE_UDEV, test x$enable_udev = xyes)
