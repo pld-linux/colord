@@ -8,12 +8,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	1.2.1
+Version:	1.2.2
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	452e02b3a7cc3ae5b4fc9bef304a6902
+# Source0-md5:	a03f06f20a1c70cbf30fc8bd59b99678
 Patch0:		%{name}-completions.patch
 Patch1:		%{name}-sh.patch
 URL:		http://www.freedesktop.org/software/colord/
@@ -26,7 +26,7 @@ BuildRequires:	glib2-devel >= 1:2.36
 BuildRequires:	gobject-introspection-devel >= 0.9.8
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	intltool >= 0.40.0
-BuildRequires:	lcms2-devel >= 2.4
+BuildRequires:	lcms2-devel >= 2.6
 BuildRequires:	libgusb-devel >= 0.1.1
 BuildRequires:	libtool >= 2:2.0
 BuildRequires:	libusb-devel >= 1.0.0
@@ -59,7 +59,7 @@ Summary:	colord library
 Summary(pl.UTF-8):	Biblioteka colord
 Group:		Libraries
 Requires:	glib2 >= 1:2.36
-Requires:	lcms2 >= 2.4
+Requires:	lcms2 >= 2.6
 # for libcolorhug only
 Requires:	libgusb >= 0.1.1
 Suggests:	%{name} = %{version}-%{release}
@@ -79,7 +79,7 @@ Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	dbus-devel
 Requires:	glib2-devel >= 1:2.36
-Requires:	lcms2-devel >= 2.4
+Requires:	lcms2-devel >= 2.6
 Requires:	libgusb-devel >= 0.1.1
 Obsoletes:	colorhug-client-devel < 0.1.14
 
@@ -157,6 +157,7 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 	--disable-silent-rules \
 	--enable-bash-completion=%{_datadir}/bash-completion/completions \
 	%{__enable_disable apidocs gtk-doc} \
+	--enable-libcolordcompat \
 	%{__enable sane} \
 	%{__enable_disable static_libs static} \
 	%{__enable_disable vala} \
@@ -259,6 +260,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libcolord.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcolord.so.2
+%attr(755,root,root) %{_libdir}/libcolordcompat.so
 %attr(755,root,root) %{_libdir}/libcolordprivate.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcolordprivate.so.2
 %attr(755,root,root) %{_libdir}/libcolorhug.so.*.*.*
@@ -281,6 +283,7 @@ fi
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libcolord.a
+%{_libdir}/libcolordcompat.a
 %{_libdir}/libcolordprivate.a
 %{_libdir}/libcolorhug.a
 %endif
