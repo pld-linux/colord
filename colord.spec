@@ -8,12 +8,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	1.2.4
+Version:	1.2.5
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	d0a9c8e29374b6330455fb8902c8f246
+# Source0-md5:	d74f6d476bb161e8cab31e5bd0406f92
 Patch0:		%{name}-completions.patch
 Patch1:		%{name}-sh.patch
 URL:		http://www.freedesktop.org/software/colord/
@@ -184,8 +184,9 @@ rm -rf $RPM_BUILD_ROOT
 %{__mv} $RPM_BUILD_ROOT%{_localedir}/{da_DK,da}
 # the same as it locale
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
-# empty version of nb locale
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/nb_NO
+# unify dir name
+test ! -d $RPM_BUILD_ROOT%{_localedir}/nb || exit 1
+%{__mv} $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
 # simplify dir name
 test ! -d $RPM_BUILD_ROOT%{_localedir}/nn || exit 1
 %{__mv} $RPM_BUILD_ROOT%{_localedir}/{nn_NO,nn}
@@ -216,6 +217,7 @@ fi
 %attr(755,root,root) %{_bindir}/cd-create-profile
 %attr(755,root,root) %{_bindir}/cd-fix-profile
 %attr(755,root,root) %{_bindir}/cd-iccdump
+%attr(755,root,root) %{_bindir}/cd-it8
 %attr(755,root,root) %{_bindir}/colormgr
 %attr(755,root,root) %{_libexecdir}/colord
 %{?with_sane:%attr(755,root,root) %{_libexecdir}/colord-sane}
@@ -248,7 +250,7 @@ fi
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_mandir}/man1/cd-create-profile.1*
 %{_mandir}/man1/cd-fix-profile.1*
-# man5?
+%{_mandir}/man1/cd-it8.1*
 %{_mandir}/man1/colormgr.1*
 %{systemdunitdir}/colord.service
 /etc/dbus-1/system.d/org.freedesktop.ColorManager.conf
