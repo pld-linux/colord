@@ -8,12 +8,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	1.2.5
+Version:	1.2.7
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	d74f6d476bb161e8cab31e5bd0406f92
+# Source0-md5:	73d5979385667c5f0d683e7f2b226758
 Patch0:		%{name}-completions.patch
 Patch1:		%{name}-sh.patch
 URL:		http://www.freedesktop.org/software/colord/
@@ -29,7 +29,6 @@ BuildRequires:	intltool >= 0.40.0
 BuildRequires:	lcms2-devel >= 2.6
 BuildRequires:	libgusb-devel >= 0.1.1
 BuildRequires:	libtool >= 2:2.0
-BuildRequires:	libusb-devel >= 1.0.0
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.103
 BuildRequires:	rpmbuild(macros) >= 1.644
@@ -43,6 +42,8 @@ Requires(post,preun,postun):	systemd-units >= 44
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	polkit-libs >= 0.103
 Requires:	systemd-units >= 44
+# /usr/bin/spotread called by argyll sensor driver
+Suggests:	argyllcms
 Suggests:	shared-color-profiles
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -154,6 +155,7 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 %{__autoheader}
 %{__automake}
 %configure \
+	SPOTREAD=/usr/bin/spotread \
 	--disable-silent-rules \
 	--enable-bash-completion=%{_datadir}/bash-completion/completions \
 	%{__enable_disable apidocs gtk-doc} \
