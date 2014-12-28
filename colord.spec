@@ -21,7 +21,7 @@ BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
 BuildRequires:	dbus-devel
 BuildRequires:	docbook-utils
-BuildRequires:	gettext-devel >= 0.17
+BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	glib2-devel >= 1:2.36
 BuildRequires:	gobject-introspection-devel >= 0.9.8
 BuildRequires:	gtk-doc >= 1.9
