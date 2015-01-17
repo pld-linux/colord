@@ -40,7 +40,7 @@ BuildRequires:	udev-glib-devel
 %{?with_vala:BuildRequires:	vala}
 Requires(post,preun,postun):	systemd-units >= 44
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	polkit-libs >= 0.103
+Requires:	polkit >= 0.103
 Requires:	systemd-units >= 44
 # /usr/bin/spotread called by argyll sensor driver
 Suggests:	argyllcms
