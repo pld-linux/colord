@@ -184,6 +184,8 @@ rm -rf $RPM_BUILD_ROOT
 # less incomplete version of da locale
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/da
 %{__mv} $RPM_BUILD_ROOT%{_localedir}/{da_DK,da}
+# outdated version of it
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
 # less incomplete version of pt locale
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/pt
 %{__mv} $RPM_BUILD_ROOT%{_localedir}/{pt_PT,pt}
