@@ -8,12 +8,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	1.2.7
+Version:	1.2.8
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	73d5979385667c5f0d683e7f2b226758
+# Source0-md5:	f663cb211d1d338b246daf02ed670910
 Patch0:		%{name}-completions.patch
 Patch1:		%{name}-sh.patch
 URL:		http://www.freedesktop.org/software/colord/
@@ -27,7 +27,7 @@ BuildRequires:	gobject-introspection-devel >= 0.9.8
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	intltool >= 0.40.0
 BuildRequires:	lcms2-devel >= 2.6
-BuildRequires:	libgusb-devel >= 0.1.1
+BuildRequires:	libgusb-devel >= 0.2.2
 BuildRequires:	libtool >= 2:2.0
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.103
@@ -62,7 +62,7 @@ Group:		Libraries
 Requires:	glib2 >= 1:2.36
 Requires:	lcms2 >= 2.6
 # for libcolorhug only
-Requires:	libgusb >= 0.1.1
+Requires:	libgusb >= 0.2.2
 Suggests:	%{name} = %{version}-%{release}
 Obsoletes:	colorhug-client-libs < 0.1.14
 Conflicts:	colord < 0.1.12-4
@@ -81,7 +81,7 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	dbus-devel
 Requires:	glib2-devel >= 1:2.36
 Requires:	lcms2-devel >= 2.6
-Requires:	libgusb-devel >= 0.1.1
+Requires:	libgusb-devel >= 0.2.2
 Obsoletes:	colorhug-client-devel < 0.1.14
 
 %description devel
@@ -184,14 +184,6 @@ rm -rf $RPM_BUILD_ROOT
 # less incomplete version of da locale
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/da
 %{__mv} $RPM_BUILD_ROOT%{_localedir}/{da_DK,da}
-# the same as it locale
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/it_IT
-# unify dir name
-test ! -d $RPM_BUILD_ROOT%{_localedir}/nb || exit 1
-%{__mv} $RPM_BUILD_ROOT%{_localedir}/{nb_NO,nb}
-# simplify dir name
-test ! -d $RPM_BUILD_ROOT%{_localedir}/nn || exit 1
-%{__mv} $RPM_BUILD_ROOT%{_localedir}/{nn_NO,nn}
 # less incomplete version of pt locale
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/pt
 %{__mv} $RPM_BUILD_ROOT%{_localedir}/{pt_PT,pt}
