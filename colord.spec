@@ -8,12 +8,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	1.2.11
+Version:	1.2.12
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	54007f28fa5cce05e7fa3fa64c568024
+# Source0-md5:	80b106ba18a43c7eeaf2d9a2b8c5725b
 Patch0:		%{name}-completions.patch
 Patch1:		%{name}-sh.patch
 URL:		http://www.freedesktop.org/software/colord/
@@ -230,6 +230,7 @@ fi
 %attr(755,root,root) %{_libdir}/colord-sensors/libdtp94-private.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libhuey-private.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libmunki-private.so
+%attr(755,root,root) %{_libdir}/colord-sensors/libospark-private.so
 %{_datadir}/colord
 %{_datadir}/color/icc/colord
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorHelper.xml
