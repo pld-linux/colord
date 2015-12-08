@@ -4,12 +4,12 @@
 %bcond_without	sane		# SANE support
 %bcond_without	static_libs	# don't build static libraries
 %bcond_without	vala		# don't build Vala API
-#
+
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
 Version:	1.2.12
-Release:	1
+Release:	2
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
@@ -108,6 +108,9 @@ Summary:	colord API documentation
 Summary(pl.UTF-8):	Dokumentacja API colord
 Group:		Documentation
 Requires:	gtk-doc-common
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description apidocs
 colord API documentation.
@@ -157,7 +160,7 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 %configure \
 	SPOTREAD=/usr/bin/spotread \
 	--disable-silent-rules \
-	--enable-bash-completion=%{_datadir}/bash-completion/completions \
+	--enable-bash-completion=%{bash_compdir} \
 	%{__enable_disable apidocs gtk-doc} \
 	--enable-libcolordcompat \
 	%{__enable sane} \
@@ -298,4 +301,4 @@ fi
 
 %files -n bash-completion-colord
 %defattr(644,root,root,755)
-%{_datadir}/bash-completion/completions/colormgr
+%{bash_compdir}/colormgr
