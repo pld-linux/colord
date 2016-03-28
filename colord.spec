@@ -9,7 +9,7 @@ Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
 Version:	1.2.12
-Release:	2
+Release:	3
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
@@ -123,6 +123,9 @@ Summary:	colord API for Vala language
 Summary(pl.UTF-8):	API colord dla języka Vala
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description -n vala-colord
 colord API for Vala language.
