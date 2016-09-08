@@ -8,12 +8,13 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	1.2.12
-Release:	3
+# note: 1.3.x is devel; stick to stable line when possible (some GNOME 3.20 components require colord >= 1.3.1)
+Version:	1.3.3
+Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	80b106ba18a43c7eeaf2d9a2b8c5725b
+# Source0-md5:	63ad39539845040141e8deffde11cf85
 Patch0:		%{name}-completions.patch
 Patch1:		%{name}-sh.patch
 URL:		http://www.freedesktop.org/software/colord/
@@ -22,18 +23,18 @@ BuildRequires:	automake >= 1:1.9
 BuildRequires:	dbus-devel
 BuildRequires:	docbook-utils
 BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	glib2-devel >= 1:2.36
+BuildRequires:	glib2-devel >= 1:2.44.0
 BuildRequires:	gobject-introspection-devel >= 0.9.8
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	intltool >= 0.40.0
 BuildRequires:	lcms2-devel >= 2.6
-BuildRequires:	libgusb-devel >= 0.2.2
+BuildRequires:	libgusb-devel >= 0.2.7
 BuildRequires:	libtool >= 2:2.0
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.103
 BuildRequires:	rpmbuild(macros) >= 1.644
 %{?with_sane:BuildRequires:	sane-backends-devel}
-BuildRequires:	sqlite3-devel
+BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	systemd-devel >= 44
 BuildRequires:	udev-devel
 BuildRequires:	udev-glib-devel
@@ -45,6 +46,8 @@ Requires:	systemd-units >= 44
 # /usr/bin/spotread called by argyll sensor driver
 Suggests:	argyllcms
 Suggests:	shared-color-profiles
+Provides:	group(colord)
+Provides:	user(colord)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -59,10 +62,10 @@ obsługujące kolory na profile kolorów w kontekście systemu.
 Summary:	colord library
 Summary(pl.UTF-8):	Biblioteka colord
 Group:		Libraries
-Requires:	glib2 >= 1:2.36
+Requires:	glib2 >= 1:2.44.0
 Requires:	lcms2 >= 2.6
 # for libcolorhug only
-Requires:	libgusb >= 0.2.2
+Requires:	libgusb >= 0.2.7
 Suggests:	%{name} = %{version}-%{release}
 Obsoletes:	colorhug-client-libs < 0.1.14
 Conflicts:	colord < 0.1.12-4
@@ -79,9 +82,9 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki colord
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	dbus-devel
-Requires:	glib2-devel >= 1:2.36
+Requires:	glib2-devel >= 1:2.44.0
 Requires:	lcms2-devel >= 2.6
-Requires:	libgusb-devel >= 0.2.2
+Requires:	libgusb-devel >= 0.2.7
 Obsoletes:	colorhug-client-devel < 0.1.14
 
 %description devel
@@ -169,6 +172,7 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 	%{__enable sane} \
 	%{__enable_disable static_libs static} \
 	%{__enable_disable vala} \
+	--with-daemon-user=colord \
 	--with-html-dir=%{_gtkdocdir} \
 	--with-systemdsystemunitdir=%{systemdunitdir}
 # doc build is broken with -j
@@ -198,14 +202,20 @@ rm -rf $RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre
+%groupadd -g 331 colord
+%useradd -u 331 -d /var/lib/colord -g colord -c "colord daemon user" colord
+
 %post
 %glib_compile_schemas
 
 %postun
+%systemd_reload
 if [ "$1" = "0" ]; then
 	%glib_compile_schemas
+	%userremove colord
+	%groupremove colord
 fi
-%systemd_reload
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
@@ -233,6 +243,7 @@ fi
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_huey.so
 # disabled for now
 #%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_munki.so
+%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_spark.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libdtp94-private.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libhuey-private.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libmunki-private.so
@@ -253,10 +264,13 @@ fi
 %{_mandir}/man1/cd-it8.1*
 %{_mandir}/man1/colormgr.1*
 %{systemdunitdir}/colord.service
+%{systemduserunitdir}/colord-session.service
+%{systemdtmpfilesdir}/colord.conf
 /etc/dbus-1/system.d/org.freedesktop.ColorManager.conf
 /lib/udev/rules.d/69-cd-sensors.rules
 /lib/udev/rules.d/95-cd-devices.rules
-%dir /var/lib/colord
+%attr(755,colord,colord) %dir /var/lib/colord
+%attr(755,colord,colord) %dir /var/lib/colord/icc
 
 %files libs
 %defattr(644,root,root,755)
