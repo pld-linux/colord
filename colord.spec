@@ -2,21 +2,18 @@
 # Conditional build:
 %bcond_without	apidocs		# do not build and package API docs
 %bcond_without	sane		# SANE support
-%bcond_without	static_libs	# don't build static libraries
 %bcond_without	vala		# don't build Vala API
 
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-# note: 1.3.x is devel; stick to stable line when possible (some GNOME 3.20 components require colord >= 1.3.1)
-Version:	1.3.5
+Version:	1.4.1
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	https://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	a8e7fcf0a45383ca7a65cef91ca5e019
+# Source0-md5:	f457be5b7c44827e6c747ec80a6dc69a
 Patch0:		%{name}-completions.patch
-Patch1:		%{name}-sh.patch
 URL:		https://www.freedesktop.org/software/colord/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.9
@@ -86,25 +83,14 @@ Requires:	glib2-devel >= 1:2.44.0
 Requires:	lcms2-devel >= 2.6
 Requires:	libgusb-devel >= 0.2.7
 Obsoletes:	colorhug-client-devel < 0.1.14
+Obsoletes:	colord-static < 1.4.0
+Obsoletes:	colorhug-client-static < 0.1.14
 
 %description devel
 Header files for colord library.
 
 %description devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki colord.
-
-%package static
-Summary:	Static colord library
-Summary(pl.UTF-8):	Statyczna biblioteka colord
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-Obsoletes:	colorhug-client-static < 0.1.14
-
-%description static
-Static colord library.
-
-%description static -l pl.UTF-8
-Statyczna biblioteka colord.
 
 %package apidocs
 Summary:	colord API documentation
@@ -154,40 +140,22 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
-%{__intltoolize}
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-%configure \
-	SPOTREAD=/usr/bin/spotread \
-	--disable-silent-rules \
-	--enable-bash-completion=%{bash_compdir} \
-	%{__enable_disable apidocs gtk-doc} \
-	--enable-libcolordcompat \
-	%{__enable sane} \
-	%{__enable_disable static_libs static} \
-	%{__enable_disable vala} \
-	--with-daemon-user=colord \
-	--with-html-dir=%{_gtkdocdir} \
-	--with-systemdsystemunitdir=%{systemdunitdir}
-# doc build is broken with -j
-%{__make} -j1
+%meson build \
+	%{!?with_apidocs:-Denable-docs=false} \
+	-Denable-libcolordcompat=true \
+	%{?with_sane:-Denable-sane=true} \
+	%{?with_vala:-Denable-vala=true} \
+	-Dwith-bash-completion-dir=%{bash_compdir} \
+	-Dwith-daemon-user=colord
+
+%meson_build -C build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
-
-# obsoleted by pkg-config
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
-# loadable modules
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/colord-{plugins,sensors}/*.{la,a}
+%meson_install -C build
 
 %find_lang %{name}
 
@@ -214,7 +182,7 @@ fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README.md TODO
+%doc AUTHORS NEWS README.md
 %attr(755,root,root) %{_bindir}/cd-create-profile
 %attr(755,root,root) %{_bindir}/cd-fix-profile
 %attr(755,root,root) %{_bindir}/cd-iccdump
@@ -224,9 +192,9 @@ fi
 %{?with_sane:%attr(755,root,root) %{_libexecdir}/colord-sane}
 %attr(755,root,root) %{_libexecdir}/colord-session
 %dir %{_libdir}/colord-plugins
-%attr(755,root,root) %{_libdir}/colord-plugins/libcd_plugin_camera.so
-%{?with_sane:%attr(755,root,root) %{_libdir}/colord-plugins/libcd_plugin_sane.so}
-%attr(755,root,root) %{_libdir}/colord-plugins/libcd_plugin_scanner.so
+%attr(755,root,root) %{_libdir}/colord-plugins/libcolord_sensor_camera.so
+%{?with_sane:%attr(755,root,root) %{_libdir}/colord-plugins/libcolord_sensor_sane.so}
+%attr(755,root,root) %{_libdir}/colord-plugins/libcolord_sensor_scanner.so
 %dir %{_libdir}/colord-sensors
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_argyll.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_colorhug.so
@@ -236,10 +204,6 @@ fi
 # disabled for now
 #%attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_munki.so
 %attr(755,root,root) %{_libdir}/colord-sensors/libcolord_sensor_spark.so
-%attr(755,root,root) %{_libdir}/colord-sensors/libdtp94-private.so
-%attr(755,root,root) %{_libdir}/colord-sensors/libhuey-private.so
-%attr(755,root,root) %{_libdir}/colord-sensors/libmunki-private.so
-%attr(755,root,root) %{_libdir}/colord-sensors/libospark-private.so
 %{_datadir}/colord
 %{_datadir}/color/icc/colord
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorHelper.xml
@@ -249,6 +213,7 @@ fi
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager.xml
 %{_datadir}/dbus-1/services/org.freedesktop.ColorHelper.service
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
+%{_datadir}/dbus-1/system.d/org.freedesktop.ColorManager.conf
 %{_datadir}/glib-2.0/schemas/org.freedesktop.ColorHelper.gschema.xml
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_mandir}/man1/cd-create-profile.1*
@@ -258,7 +223,6 @@ fi
 %{systemdunitdir}/colord.service
 %{systemduserunitdir}/colord-session.service
 %{systemdtmpfilesdir}/colord.conf
-/etc/dbus-1/system.d/org.freedesktop.ColorManager.conf
 /lib/udev/rules.d/69-cd-sensors.rules
 /lib/udev/rules.d/95-cd-devices.rules
 %attr(755,colord,colord) %dir /var/lib/colord
@@ -274,7 +238,7 @@ fi
 %attr(755,root,root) %{_libdir}/libcolorhug.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libcolorhug.so.2
 %{_libdir}/girepository-1.0/Colord-1.0.typelib
-%{_libdir}/girepository-1.0/ColorHug-1.0.typelib
+%{_libdir}/girepository-1.0/Colorhug-1.0.typelib
 
 %files devel
 %defattr(644,root,root,755)
@@ -285,16 +249,7 @@ fi
 %{_pkgconfigdir}/colord.pc
 %{_pkgconfigdir}/colorhug.pc
 %{_datadir}/gir-1.0/Colord-1.0.gir
-%{_datadir}/gir-1.0/ColorHug-1.0.gir
-
-%if %{with static_libs}
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libcolord.a
-%{_libdir}/libcolordcompat.a
-%{_libdir}/libcolordprivate.a
-%{_libdir}/libcolorhug.a
-%endif
+%{_datadir}/gir-1.0/Colorhug-1.0.gir
 
 %if %{with apidocs}
 %files apidocs
@@ -305,6 +260,7 @@ fi
 %if %{with vala}
 %files -n vala-colord
 %defattr(644,root,root,755)
+%{_datadir}/vala/vapi/colord.deps
 %{_datadir}/vala/vapi/colord.vapi
 %endif
 
