@@ -15,18 +15,19 @@ Source0:	https://www.freedesktop.org/software/colord/releases/%{name}-%{version}
 # Source0-md5:	f457be5b7c44827e6c747ec80a6dc69a
 Patch0:		%{name}-completions.patch
 URL:		https://www.freedesktop.org/software/colord/
-BuildRequires:	autoconf >= 2.63
-BuildRequires:	automake >= 1:1.9
+# for colprof,spotread programs detection
+BuildRequires:	argyllcms
 BuildRequires:	dbus-devel
 BuildRequires:	docbook-utils
+BuildRequires:	gcc >= 5:3.2
 BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	glib2-devel >= 1:2.44.0
+BuildRequires:	glib2-devel >= 1:2.46.0
 BuildRequires:	gobject-introspection-devel >= 0.9.8
 BuildRequires:	gtk-doc >= 1.9
-BuildRequires:	intltool >= 0.40.0
 BuildRequires:	lcms2-devel >= 2.6
 BuildRequires:	libgusb-devel >= 0.2.7
-BuildRequires:	libtool >= 2:2.0
+BuildRequires:	meson >= 0.37.0
+BuildRequires:	ninja
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.103
 BuildRequires:	rpmbuild(macros) >= 1.644
@@ -59,7 +60,7 @@ obsługujące kolory na profile kolorów w kontekście systemu.
 Summary:	colord library
 Summary(pl.UTF-8):	Biblioteka colord
 Group:		Libraries
-Requires:	glib2 >= 1:2.44.0
+Requires:	glib2 >= 1:2.46.0
 Requires:	lcms2 >= 2.6
 # for libcolorhug only
 Requires:	libgusb >= 0.2.7
@@ -79,7 +80,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki colord
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	dbus-devel
-Requires:	glib2-devel >= 1:2.44.0
+Requires:	glib2-devel >= 1:2.46.0
 Requires:	lcms2-devel >= 2.6
 Requires:	libgusb-devel >= 0.2.7
 Obsoletes:	colorhug-client-devel < 0.1.14
