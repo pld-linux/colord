@@ -7,12 +7,12 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	1.4.2
+Version:	1.4.3
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	https://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	eb6bcc5b826e1ad9bfa75c94534826a4
+# Source0-md5:	f032ecac927e9078c41fff97800441e8
 Patch0:		%{name}-completions.patch
 URL:		https://www.freedesktop.org/software/colord/
 # for colprof,spotread programs detection
@@ -144,12 +144,12 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 
 %build
 %meson build \
-	%{!?with_apidocs:-Denable-docs=false} \
-	-Denable-libcolordcompat=true \
-	%{?with_sane:-Denable-sane=true} \
-	%{?with_vala:-Denable-vala=true} \
-	-Dwith-bash-completion-dir=%{bash_compdir} \
-	-Dwith-daemon-user=colord
+	%{!?with_apidocs:-Ddocs=false} \
+	-Dlibcolordcompat=true \
+	%{?with_sane:-Dsane=true} \
+	%{?with_vala:-Dvapi=true} \
+	-Dbash_completion_dir=%{bash_compdir} \
+	-Ddaemon_user=colord
 
 %meson_build -C build
 

@@ -5,27 +5,28 @@
  if get_option('enable-bash-completion')
    install_data('colormgr',
 -    install_dir: bash_completion.get_pkgconfig_variable('completionsdir')
-+    install_dir: get_option('with-bash-completion-dir')
++    install_dir: get_option('bash_completion_dir')
    )
  endif
  
---- colord-1.4.1/meson.build.orig	2017-08-21 11:02:36.000000000 +0200
-+++ colord-1.4.1/meson.build	2017-12-23 23:41:23.647019972 +0100
-@@ -146,9 +146,6 @@
+--- colord-1.4.3/meson.build.orig	2018-09-29 19:42:17.407154714 +0200
++++ colord-1.4.3/meson.build	2018-09-29 19:43:56.833820242 +0200
+@@ -149,9 +149,6 @@
    gnome_desktop = dependency('gnome-desktop-3.0', version : '>= 0.2.7')
    colord_gtk = dependency('colord-gtk', version : '>= 0.1.24')
  endif
--if get_option('enable-bash-completion')
+-if get_option('bash_completion')
 -  bash_completion = dependency('bash-completion', version : '>= 2.0')
 -endif
  
- if get_option('enable-sane')
+ if get_option('sane')
    sane = dependency('sane-backends')
---- colord-1.4.1/meson_options.txt.orig	2017-08-21 11:02:36.000000000 +0200
-+++ colord-1.4.1/meson_options.txt	2017-12-23 23:42:47.510352342 +0100
-@@ -12,3 +12,5 @@
- option('with-daemon-user', type : 'string', value : 'root', description : 'User for running the colord daemon')
- option('enable-man', type : 'boolean', value : true, description : 'Generate man pages')
- option('enable-docs', type : 'boolean', value : true, description : 'Generate documentation')
-+option('with-bash-completion-dir', type : 'string', description : 'Bash
-+completions dir')
+--- colord-1.4.3/meson_options.txt.orig	2018-09-29 19:42:17.410488047 +0200
++++ colord-1.4.3/meson_options.txt	2018-09-29 19:43:20.723820651 +0200
+@@ -1,5 +1,6 @@
+ option('session_example', type : 'boolean', value : false, description : 'Enable session example')
+ option('bash_completion', type : 'boolean', value : true, description : 'Enable bash completion')
++option('bash_completion_dir', type : 'string', description : 'Bash completion dir')
+ option('udev_rules', type: 'boolean', value: true, description: 'Install udev rules')
+ option('systemd', type : 'boolean', value : true, description : 'Enable systemd integration')
+ option('libcolordcompat', type : 'boolean', value : false, description : 'Enable libcolordcompat.so which is used by ArgyllCMS')
