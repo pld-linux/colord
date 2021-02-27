@@ -98,9 +98,7 @@ Summary:	colord API documentation
 Summary(pl.UTF-8):	Dokumentacja API colord
 Group:		Documentation
 Requires:	gtk-doc-common
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description apidocs
 colord API documentation.
@@ -113,9 +111,7 @@ Summary:	colord API for Vala language
 Summary(pl.UTF-8):	API colord dla języka Vala
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description -n vala-colord
 colord API for Vala language.
@@ -128,9 +124,7 @@ Summary:	bash-completion for colormgr console commands
 Summary(pl.UTF-8):	Bashowe uzupełnianie poleceń terminalowych colormgr
 Group:		Applications/Shells
 Requires:	bash-completion >= 2.0
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description -n bash-completion-colord
 bash-completion for colormgr console commands.
