@@ -1,8 +1,8 @@
 #
 # Conditional build:
-%bcond_without	apidocs		# do not build and package API docs
+%bcond_without	apidocs		# gtk-doc based API documentation
 %bcond_without	sane		# SANE support
-%bcond_without	vala		# don't build Vala API
+%bcond_without	vala		# Vala API
 
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
@@ -13,10 +13,10 @@ License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	https://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
 # Source0-md5:	adc4501b54fb8667ee99f64cff87e12d
-Patch0:		%{name}-completions.patch
 URL:		https://www.freedesktop.org/software/colord/
 # for colprof,spotread programs detection
 BuildRequires:	argyllcms
+BuildRequires:	bash-completion-devel >= 2.0
 BuildRequires:	dbus-devel
 BuildRequires:	docbook-utils
 BuildRequires:	gcc >= 5:3.2
@@ -135,7 +135,6 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %meson build \
@@ -143,7 +142,6 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 	-Dlibcolordcompat=true \
 	%{?with_sane:-Dsane=true} \
 	%{?with_vala:-Dvapi=true} \
-	-Dbash_completion_dir=%{bash_compdir} \
 	-Ddaemon_user=colord
 
 %meson_build -C build
