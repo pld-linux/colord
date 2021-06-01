@@ -36,9 +36,11 @@ BuildRequires:	rpmbuild(macros) >= 1.736
 %{?with_sane:BuildRequires:	sane-backends-devel}
 BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	systemd-devel >= 44
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	udev-devel
 BuildRequires:	udev-glib-devel
 %{?with_vala:BuildRequires:	vala}
+BuildRequires:	xz
 Requires(post,preun,postun):	systemd-units >= 44
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	polkit >= 0.103
