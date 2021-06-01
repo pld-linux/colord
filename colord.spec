@@ -32,7 +32,7 @@ BuildRequires:	ninja
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.103
 BuildRequires:	rpm-build >= 4.6
-BuildRequires:	rpmbuild(macros) >= 1.644
+BuildRequires:	rpmbuild(macros) >= 1.736
 %{?with_sane:BuildRequires:	sane-backends-devel}
 BuildRequires:	sqlite3-devel >= 3
 BuildRequires:	systemd-devel >= 44
@@ -145,12 +145,12 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 	%{?with_vala:-Dvapi=true} \
 	-Ddaemon_user=colord
 
-%meson_build -C build
+%ninja_build -C build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%meson_install -C build
+%ninja_install -C build
 
 %find_lang %{name}
 
