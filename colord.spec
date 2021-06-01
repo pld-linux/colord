@@ -27,7 +27,7 @@ BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	lcms2-devel >= 2.6
 BuildRequires:	libgusb-devel >= 0.2.7
 BuildRequires:	libxslt-progs
-BuildRequires:	meson >= 0.46.0
+BuildRequires:	meson >= 0.52.0
 BuildRequires:	ninja
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.103
