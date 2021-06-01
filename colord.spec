@@ -18,7 +18,7 @@ URL:		https://www.freedesktop.org/software/colord/
 BuildRequires:	argyllcms
 BuildRequires:	bash-completion-devel >= 2.0
 BuildRequires:	dbus-devel
-BuildRequires:	docbook-utils
+BuildRequires:	docbook-style-xsl-ns
 BuildRequires:	gcc >= 5:3.2
 BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	glib2-devel >= 1:2.46.0
@@ -26,6 +26,7 @@ BuildRequires:	gobject-introspection-devel >= 0.9.8
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	lcms2-devel >= 2.6
 BuildRequires:	libgusb-devel >= 0.2.7
+BuildRequires:	libxslt-progs
 BuildRequires:	meson >= 0.46.0
 BuildRequires:	ninja
 BuildRequires:	pkgconfig
@@ -84,8 +85,8 @@ Requires:	dbus-devel
 Requires:	glib2-devel >= 1:2.46.0
 Requires:	lcms2-devel >= 2.6
 Requires:	libgusb-devel >= 0.2.7
-Obsoletes:	colorhug-client-devel < 0.1.14
 Obsoletes:	colord-static < 1.4.0
+Obsoletes:	colorhug-client-devel < 0.1.14
 Obsoletes:	colorhug-client-static < 0.1.14
 
 %description devel
