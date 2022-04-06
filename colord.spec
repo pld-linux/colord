@@ -3,6 +3,7 @@
 %bcond_without	apidocs		# gtk-doc based API documentation
 %bcond_without	sane		# SANE support
 %bcond_without	vala		# Vala API
+%bcond_without	systemd		# systemd
 
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
@@ -35,7 +36,7 @@ BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.736
 %{?with_sane:BuildRequires:	sane-backends-devel}
 BuildRequires:	sqlite3-devel >= 3
-BuildRequires:	systemd-devel >= 44
+%{?with_systemd:BuildRequires:	systemd-devel >= 44}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	udev-devel
 BuildRequires:	udev-glib-devel
@@ -144,6 +145,7 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 	%{!?with_apidocs:-Ddocs=false} \
 	-Dlibcolordcompat=true \
 	%{?with_sane:-Dsane=true} \
+	%{!?with_systemd:-Dsystemd=false} \
 	%{?with_vala:-Dvapi=true} \
 	-Ddaemon_user=colord
 
@@ -216,9 +218,11 @@ fi
 %{_mandir}/man1/cd-fix-profile.1*
 %{_mandir}/man1/cd-it8.1*
 %{_mandir}/man1/colormgr.1*
+%if %{with systemd}
 %{systemdunitdir}/colord.service
 %{systemduserunitdir}/colord-session.service
 %{systemdtmpfilesdir}/colord.conf
+%endif
 /lib/udev/rules.d/69-cd-sensors.rules
 /lib/udev/rules.d/95-cd-devices.rules
 %attr(755,colord,colord) %dir /var/lib/colord
