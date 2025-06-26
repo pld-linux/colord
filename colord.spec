@@ -8,32 +8,32 @@
 Summary:	Color daemon - system daemon for managing color devices
 Summary(pl.UTF-8):	Demon colord - usługa systemowa do zarządzania urządzeniami obsługującymi kolory
 Name:		colord
-Version:	1.4.7
+Version:	1.4.8
 Release:	1
 License:	GPL v2+ and LGPL v2+
 Group:		Daemons
 Source0:	https://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
-# Source0-md5:	94bd795efa1931a34990345e4ac439a8
+# Source0-md5:	4d17dea7fe5460c2ea16aee64dca2ecb
 URL:		https://www.freedesktop.org/software/colord/
 # for colprof,spotread programs detection
 BuildRequires:	argyllcms
-BuildRequires:	bash-completion-devel >= 2.0
+BuildRequires:	bash-completion-devel >= 1:2.0
 BuildRequires:	dbus-devel
 BuildRequires:	docbook-style-xsl-ns
 BuildRequires:	gcc >= 5:3.2
 BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	glib2-devel >= 1:2.46.0
+BuildRequires:	glib2-devel >= 1:2.58
 BuildRequires:	gobject-introspection-devel >= 0.9.8
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	lcms2-devel >= 2.6
 BuildRequires:	libgusb-devel >= 0.2.7
 BuildRequires:	libxslt-progs
 BuildRequires:	meson >= 0.52.0
-BuildRequires:	ninja
+BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.103
 BuildRequires:	rpm-build >= 4.6
-BuildRequires:	rpmbuild(macros) >= 1.736
+BuildRequires:	rpmbuild(macros) >= 2.042
 %{?with_sane:BuildRequires:	sane-backends-devel}
 BuildRequires:	sqlite3-devel >= 3
 %{?with_systemd:BuildRequires:	systemd-devel >= 44}
@@ -65,7 +65,7 @@ obsługujące kolory na profile kolorów w kontekście systemu.
 Summary:	colord library
 Summary(pl.UTF-8):	Biblioteka colord
 Group:		Libraries
-Requires:	glib2 >= 1:2.46.0
+Requires:	glib2 >= 1:2.58
 Requires:	lcms2 >= 2.6
 # for libcolorhug only
 Requires:	libgusb >= 0.2.7
@@ -85,7 +85,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki colord
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	dbus-devel
-Requires:	glib2-devel >= 1:2.46.0
+Requires:	glib2-devel >= 1:2.58
 Requires:	lcms2-devel >= 2.6
 Requires:	libgusb-devel >= 0.2.7
 Obsoletes:	colord-static < 1.4.0
@@ -128,7 +128,7 @@ API colord dla języka Vala.
 Summary:	bash-completion for colormgr console commands
 Summary(pl.UTF-8):	Bashowe uzupełnianie poleceń terminalowych colormgr
 Group:		Applications/Shells
-Requires:	bash-completion >= 2.0
+Requires:	bash-completion >= 1:2.0
 BuildArch:	noarch
 
 %description -n bash-completion-colord
@@ -141,7 +141,7 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 %setup -q
 
 %build
-%meson build \
+%meson \
 	%{!?with_apidocs:-Ddocs=false} \
 	-Dlibcolordcompat=true \
 	%{?with_sane:-Dsane=true} \
@@ -149,12 +149,12 @@ Bashowe uzupełnianie poleceń terminalowych colormgr.
 	%{?with_vala:-Dvapi=true} \
 	-Ddaemon_user=colord
 
-%ninja_build -C build
+%meson_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install
 
 %find_lang %{name}
 
@@ -163,7 +163,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %pre
 %groupadd -g 331 colord
-%useradd -u 331 -d /var/lib/colord -g colord -c "colord daemon user" colord
+%useradd -u 331 -d /var/lib/colord -g colord -c "colord colour management daemon" colord
 
 %post
 %glib_compile_schemas
@@ -213,6 +213,7 @@ fi
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
 %{_datadir}/dbus-1/system.d/org.freedesktop.ColorManager.conf
 %{_datadir}/glib-2.0/schemas/org.freedesktop.ColorHelper.gschema.xml
+%{_datadir}/metainfo/org.freedesktop.colord.metainfo.xml
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_mandir}/man1/cd-create-profile.1*
 %{_mandir}/man1/cd-fix-profile.1*
@@ -222,6 +223,7 @@ fi
 %{systemdunitdir}/colord.service
 %{systemduserunitdir}/colord-session.service
 %{systemdtmpfilesdir}/colord.conf
+/usr/lib/sysusers.d/colord-sysusers.conf
 %endif
 /lib/udev/rules.d/69-cd-sensors.rules
 /lib/udev/rules.d/95-cd-devices.rules
